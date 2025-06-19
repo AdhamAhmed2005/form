@@ -7,7 +7,6 @@ import multer from "multer";
 import fsp from "fs/promises"; // Use the promise-based version of fs
 import fs from "fs";
 import FormData from "form-data";
-import client from "./db.js";
 
 dotenv.config();
 const app = express();
@@ -96,16 +95,7 @@ app.post("/api/submit", upload.single("image"), async (req, res) => {
 		await fsp.unlink(req.file.path);
 
 		// Save transaction details to the database
-		await client.query(
-			"INSERT INTO transactions(balance, phone, payment_method, sender_info, screenshot) VALUES($1, $2, $3, $4, $5)",
-			[
-				balance,
-				phone,
-				paymentMethod,
-				senderInfo[0] ? senderInfo[0] : senderInfo[1],
-				uploadRequest.data.file_url,
-			]
-		);
+		
 
 		// Send a push notification
 
